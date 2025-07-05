@@ -1,0 +1,15 @@
+use mydb74;
+select * from employees;
+
+
+-- HAVING CLAUSE
+select department, sum(salary) as tot_sal, avg(salary) as avg_sal
+from employees
+group by department
+having sum(salary) >= 50000 and avg(salary) > 55000; 
+
+-- WHERE CLAUSE 
+select department, sum(salary) as total_rev
+from employees
+where department='IT';
+
