@@ -1,0 +1,62 @@
+use demo -- already demo database exist.
+
+show tables -- showing tables in the demo db
+
+-- Creating Order1 Table
+
+create table Order1(
+order_id int,
+customer_id int,
+order_date date,
+amount decimal(10,2),
+product_id int
+);
+
+-- inserting values in order1 table
+
+insert into Order1 (order_id,customer_id, order_date, amount, product_id) values
+(1, 101, '2023-01-15', 50.00, 1001),
+(1, 101, '2023-01-15', 50.00, 1001),  -- Full duplicate
+(2, 102, '2023-02-20', 75.00, 1002),
+(3, 101, '2023-03-10', 50.00, 1001),  -- Same customer/product, different date
+(4, 103, '2023-04-05', 100.00, 1003),
+(4, 103, '2023-04-05', 100.00, 1003),  -- Full duplicate
+(5, 102, '2023-02-20', 75.00, 1002),  -- Duplicate except order_id
+(6, 104, '2023-05-12', 200.00, 1004);
+
+-- Distinct Keyword
+-- Use case : Get unique order records for reporting
+-- Scenario : Finance need distinct transaction for revenue calculation
+
+-- Get all unique orders
+select distinct * from order1
+
+-- Get unique customer-product combinations
+select distinct customer_id, product_id from order1
+
+-- GROUP BY with Aggregation
+-- Use Case: Find customers with duplicate orders
+-- Scenario: Fraud detection team needs to identify suspicious duplicate orders
+
+-- Find duplicated orders (same order details)
+select customer_id, order_date, amount, product_id, count(*) as duplicate_count
+from order1
+group by customer_id, order_date, amount, product_id
+having count(*) > 2;
+
+
+
+insert into Order1 (order_id,customer_id, order_date, amount, product_id) values
+(1, 101, '2023-01-15', 50.00, 1001);
+
+-- Get most recent order per customer-product combo
+select 
+customer_id,product_id,
+max(order_date) as last_orderdate
+from order1
+group by customer_id,product_id;
+
+select product_id,
+count(distinct customer_id) as unique_customer
+from order1
+group by product_id;
